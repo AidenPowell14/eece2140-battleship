@@ -7,8 +7,8 @@
  * being struck at every node.
  */
 enum ShipStatus {
-    FLOATING,
-    SANK
+    FLOAT,
+    SUNK
 };
 
 #endif
