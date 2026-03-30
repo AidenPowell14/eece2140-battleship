@@ -6,14 +6,12 @@
 
 /**
  * Interface for any type of ship for Battleship.
- * All ships have a size, which determines how they occupy the board
- * and how many hits it can take before sinking. 
- * 
- * 
- * pointer to its head. All ships are assumed to be contiguous, rigid lines; 
- * they are either completely vertical or completely horizontal, though this
- * is not enforced in this object (see ShipBoardBuilder, the sole authority on
- * placing Ships).
+ * All ships have a size, which determines how many hits it can take before sinking. 
+ * Since most ships occupy more than a single cell of the ShipBoard, Ships themselves
+ * do not actually go on the board; Ships are owned by their constituent ShipNodes,
+ * which each represent a unicellular segment of a Ship. Because of this, Ships
+ * do not need to maintain state regarding individual cells (e.g. if a particular node
+ * has been hit or not), only overarching state of the whole ship.
  */
 class Ship {
     public:
@@ -34,50 +32,25 @@ class Ship {
      */
     virtual int hits() const = 0;
 
-    
-    virtual ShipStatus status() const = 0;
-
-
-
-
     /**
-     * Get the current status of the ship, i.e. if it is floating or has been sunk.
-     * Sank ships cannot be hit again.
-     * 
-     * @return ShipStatus the current status of the ship
+     * Gets the current status of this ship, i.e. whether 
+     * it has been sunk or still floating. A ship is sunk 
+     * when it has been hit a number of times equal to its
+     * size. These hits should be to different cells, but that
+     * need not be enforced here.
+     *
+     * @return ShipStatus the current status of this ship
      */
     virtual ShipStatus status() const = 0;
 
-    // /**
-    //  * Returns the position of this segment of the ship.
-    //  * Most ships span multiple cells; this method only 
-    //  * returns the cell that this node occupies.
-    //  * 
-    //  * @return the position of this ship node or null if unplaced
-    //  */
-    // virtual Point at() const = 0;
-
     /**
-     * Returns the head of this ship.
-     * This is only really necessary information
-     * when first placing the ships on the board during setup.
-     * The head's position will always be in either the same row
-     * or column as this ship.
-     * If this is the head of the ship, returns itself.
+     * Signals to this Ship to take one hit of damage,
+     * getting it closer to being sunk. The Ship's status is
+     * also returned here in case taking a hit would sink it.
      * 
-     * @return Ship const reference to head of this ship
+     * @return ShipStatus the status of this ship after taking a hit
      */
-    virtual const Ship& head() const = 0;
-
-    // /**
-    //  * Returns if this whole ship is horizontal or not,
-    //  * used to determine this ship's orientation.
-    //  * If this ship is of size 1, this is arbitrary.
-    //  * 
-    //  * @return true the ship is horizontal
-    //  * @return false the ship is vertical.
-    //  */
-    // virtual bool horizontal() const = 0;
+    virtual ShipStatus takeHit() = 0;
 
     virtual ~Ship() = default;
 };
