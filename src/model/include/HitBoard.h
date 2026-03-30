@@ -44,6 +44,7 @@ class HitBoard {
      */
     virtual void struck(Point position, HitStatus status) = 0;
 
+    virtual ~HitBoard() = default;
 };
 
 #endif

@@ -5,10 +5,10 @@
 #include "Ship.h"
 #include "../../data/Color.h"
 #include "../../data/HitStatus.h"
-//#include "ShipBoardBuilder.h"
+#include "ShipBoardBuilder.h"
 #include "HitBoard.h"
-//#include "ShipBoard.h"
-//#include "TurnListener.h"
+#include "ShipBoard.h"
+#include "TurnListener.h"
 
 #define MAX_SHIP_RATIO 0.5
 
@@ -103,6 +103,8 @@ class GameModel {
      * @param controller the controller to subscribe to this model
      */
     virtual void setListener(TurnListener* controller) = 0;
+
+    virtual ~GameModel() = default;
 };
 
 #endif

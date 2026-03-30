@@ -4,7 +4,7 @@
 #include "../../data/Color.h"
 #include "../../data/Point.h"
 #include "../../data/HitStatus.h"
-//#include "ShipNode.h"
+#include "ShipNode.h"
 
 /**
  * Interface for a player's personal data about where their own ships are, and if
@@ -15,7 +15,7 @@
  * Wherever on the board that is not occupied by a ShipNode is null. There is no way to save
  * data about an opponent's missed strikes.
  */
-class HitBoard {
+class ShipBoard {
     public:
     
     /**
@@ -45,6 +45,7 @@ class HitBoard {
      */
     virtual HitStatus strike(Point position) = 0;
 
+    virtual ~ShipBoard() = default;
 };
 
 #endif
