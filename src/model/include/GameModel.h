@@ -32,13 +32,13 @@ class GameModel {
      * 
      * @param rows the number of rows to play with
      * @param cols the number of columns to play with
-     * @param redShips a list of ships for the red player to play with
-     * @param blueShips a list of ships for the blue player to play with
-     * @return ShipBoardBuilder pointer to builder object to conduct ship placement through
+     * @param redShips a list of pointers to ships for the red player to play with
+     * @param blueShips a list of pointers to ships for the blue player to play with
+     * @return std::unique_ptr<ShipBoardBuilder> pointer to builder object to conduct ship placement through
      * @throws std::invalid_argument if the board can't be created, or there are too many
      * or too few (namely zero) ships to play with, or any one ship is longer than the board
      */
-    virtual ShipBoardBuilder* start(int rows, int cols, std::vector<Ship> redShips, std::vector<Ship> blueShips) = 0;
+    virtual std::unique_ptr<ShipBoardBuilder> start(int rows, int cols, std::vector<Ship*> redShips, std::vector<Ship*> blueShips) = 0;
 
     /**
      *  Returns the active player who should be making a move.

@@ -25,3 +25,5 @@ ShipStatus BasicShip::takeHit() {
     }
     return shipStatus;
 }
+
+BasicShip::~BasicShip() {}

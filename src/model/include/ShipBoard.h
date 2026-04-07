@@ -34,7 +34,7 @@ class ShipBoard {
      * @return const ShipNode& reference to the ShipNode at this position, or null if there isn't one
      * @throws std::invalid_argument if the position does not exist
      */
-    virtual const ShipNode& get(Point position) const = 0;
+    virtual const ShipNode* get(Point position) const = 0;
 
     /**
      * Sends a missile to the specified position on this ShipBoard.

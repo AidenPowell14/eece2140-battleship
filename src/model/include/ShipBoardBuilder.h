@@ -5,6 +5,7 @@
 #include "../../data/Point.h"
 #include "Ship.h"
 #include "ShipBoard.h"
+#include <vector>
 
 /**
  * Interface for a one-time-use builder class used to configure each player's 
@@ -33,13 +34,12 @@ class ShipBoardBuilder {
 
     /**
      * Confirms that the ShipBoard is complete for the designated player.
-     * Once this method is called, the returned ShipBoard is completely fixed 
+     * Once this method is called, the ShipBoard is completely fixed 
      * in its positions, only able to update the state of each ShipNode within.
      *
      * @param player the player to seal the ShipBoard of
-     * @return ShipBoard* pointer to the newly-created and sealed ShipBoard
      */
-    virtual ShipBoard* submit(Color player) = 0;
+    virtual void submit(Color player) = 0;
 
     /**
      * Removes the ship that occupies this position, and collects them for replacement.
@@ -60,7 +60,7 @@ class ShipBoardBuilder {
      * @param player the player to check the inventory of 
      * @return std::vector<Ship> all of that player's ships in play
      */
-    virtual const std::vector<Ship> getShips(Color player) const = 0;
+    virtual const std::vector<Ship*>& getShips(Color player) const = 0;
 
     virtual ~ShipBoardBuilder() = default;
 

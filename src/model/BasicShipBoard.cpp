@@ -9,11 +9,11 @@ Color BasicShipBoard::getOwner() const {
     return owner;
 }
 
-const ShipNode& BasicShipBoard::get(Point position) const {
+const ShipNode* BasicShipBoard::get(Point position) const {
     if (position.row < 0 || position.row > numRows || position.col < 0 || position.col > numCols) {
         throw std::invalid_argument("Position is out of bounds");
     }
-    return *board[position.row][position.col];
+    return board[position.row][position.col];
 }
 
 HitStatus BasicShipBoard::strike(Point position) {
@@ -36,3 +36,5 @@ const int BasicShipBoard::rows() const {
 const int BasicShipBoard::cols() const {
     return numCols;
 }
+
+BasicShipBoard::~BasicShipBoard() {}

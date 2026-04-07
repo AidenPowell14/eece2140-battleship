@@ -2,6 +2,7 @@
 #define BASIC_SHIP_BOARD_H
 
 #include "include/ShipBoard.h"
+#include <vector>
 
 class BasicShipBoard : public ShipBoard {
     private:
@@ -19,7 +20,7 @@ class BasicShipBoard : public ShipBoard {
 
     Color getOwner() const override;
 
-    const ShipNode& get(Point position) const override;
+    const ShipNode* get(Point position) const override;
 
     HitStatus strike(Point position) override;
 

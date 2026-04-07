@@ -8,8 +8,8 @@
 class BasicShipBoardBuilder : public ShipBoardBuilder {
     private:
 
-    std::vector<std::vector<ShipNode*>> redBoard;
-    std::vector<std::vector<ShipNode*>> blueBoard;
+    std::vector<std::vector<std::unique_ptr<ShipNode>>> redBoard;
+    std::vector<std::vector<std::unique_ptr<ShipNode>>> blueBoard;
 
     const int rows;
     const int cols;
@@ -22,20 +22,23 @@ class BasicShipBoardBuilder : public ShipBoardBuilder {
     int redPlaced = 0;
     int bluePlaced = 0;
 
-    std::vector<Ship> redShips;
-    std::vector<Ship> blueShips;    
+    std::vector<Ship*> redShips;
+    std::vector<Ship*> blueShips;    
+
+    std::unique_ptr<ShipBoard>* redShipDest;
+    std::unique_ptr<ShipBoard>* blueShipDest;
 
     public:
     BasicShipBoardBuilder(Color startingPlayer, 
         int rows, int cols, 
-        ShipBoard* redBoard, ShipBoard* blueBoard, 
-        std::vector<Ship> redShips, std::vector<Ship> blueShips);
+        std::unique_ptr<ShipBoard>* redBoardDest, std::unique_ptr<ShipBoard>* blueBoardDest, 
+        std::vector<Ship*>& redShips, std::vector<Ship*>& blueShips);
 
     void setShip(Color player, Ship& ship, Point position, bool horizontal) override;
 
-    ShipBoard* submit(Color player) override;
+    void submit(Color player) override;
 
-    const std::vector<Ship> getShips(Color player) const override;
+    const std::vector<Ship*>& getShips(Color player) const override;
 
     //void removeShip(Color player, Point position) override;
 };

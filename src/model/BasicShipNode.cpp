@@ -13,3 +13,5 @@ ShipStatus BasicShipNode::strike() {
     }
     return ship.status();
 }
+
+BasicShipNode::~BasicShipNode() {}

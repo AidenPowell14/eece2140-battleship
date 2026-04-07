@@ -2,14 +2,15 @@
 #define BASIC_GAME_MODEL_H
 
 #include "include/GameModel.h"
+#include <memory>
 
 class BasicGameModel : public GameModel {
     private:
     
     struct Profile {
         Color player;
-        ShipBoard* shipBoard;
-        HitBoard* hitBoard;
+        std::unique_ptr<ShipBoard> shipBoard;
+        std::unique_ptr<HitBoard> hitBoard;
         int numShips;
     };
 
@@ -29,13 +30,11 @@ class BasicGameModel : public GameModel {
     void checkBounds(Point position) const;
     void checkStarted() const;
 
-    friend HitBoard;
-
     public:
 
     BasicGameModel();
 
-    ShipBoardBuilder* start(int rows, int cols, std::vector<Ship> redShips, std::vector<Ship> blueShips) override;
+    std::unique_ptr<ShipBoardBuilder> start(int rows, int cols, std::vector<Ship*> redShips, std::vector<Ship*> blueShips) override;
 
     Color getActivePlayer() const override;
 

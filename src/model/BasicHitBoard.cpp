@@ -25,3 +25,5 @@ void BasicHitBoard::struck(Point position, HitStatus status) {
     }
     board[position.row][position.col] = status;
 }
+
+BasicHitBoard::~BasicHitBoard() {}

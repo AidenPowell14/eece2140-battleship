@@ -2,6 +2,7 @@
 #include "BasicHitBoard.h"
 #include "BasicShipBoardBuilder.h"
 #include <stdexcept>
+#include <memory>
 
 void BasicGameModel::checkBounds(Point position) const {
     if (position.row < 0 || position.row >= rows || position.col < 0 || position.col >= cols) {
@@ -24,7 +25,7 @@ blueProfile({Color::BLUE, nullptr, nullptr, -1}),
 controller(nullptr),
 started(false) {}
 
-ShipBoardBuilder* BasicGameModel::start(int rows, int cols, std::vector<Ship> redShips, std::vector<Ship> blueShips) {
+std::unique_ptr<ShipBoardBuilder> BasicGameModel::start(int rows, int cols, std::vector<Ship*> redShips, std::vector<Ship*> blueShips) {
     if (started) {
         throw std::invalid_argument("Game has already been started");
     }
@@ -39,15 +40,15 @@ ShipBoardBuilder* BasicGameModel::start(int rows, int cols, std::vector<Ship> re
     int totalSizeBlue = 0;
     int totalSizeAllowed = rows * cols * MAX_SHIP_RATIO;
 
-    for (Ship& ship : redShips) {
-        totalSizeRed += ship.size();
-        if (ship.size() > rows || ship.size() > cols) {
+    for (Ship* ship : redShips) {
+        totalSizeRed += ship->size();
+        if (ship->size() > rows || ship->size() > cols) {
             throw std::invalid_argument("Some ship is larger than the board");
         }
     }
-    for (Ship& ship : blueShips) {
-        totalSizeBlue += ship.size();
-        if (ship.size() > rows || ship.size() > cols) {
+    for (Ship* ship : blueShips) {
+        totalSizeBlue += ship->size();
+        if (ship->size() > rows || ship->size() > cols) {
             throw std::invalid_argument("Some ship is larger than the board");
         }
     }
@@ -59,14 +60,14 @@ ShipBoardBuilder* BasicGameModel::start(int rows, int cols, std::vector<Ship> re
     this->rows = rows;
     this->cols = cols;
 
-    redProfile.hitBoard = &BasicHitBoard(Color::RED, rows, cols);
-    blueProfile.hitBoard = &BasicHitBoard(Color::BLUE, rows, cols);
+    redProfile.hitBoard = std::make_unique<BasicHitBoard>(Color::RED, rows, cols);
+    blueProfile.hitBoard = std::make_unique<BasicHitBoard>(Color::BLUE, rows, cols);
 
     redProfile.numShips = redShips.size();
     blueProfile.numShips = blueShips.size();
 
     started = true;
-    return &BasicShipBoardBuilder(activeProfile->player, rows, cols, redProfile.shipBoard, blueProfile.shipBoard, redShips, blueShips);
+    return std::make_unique<BasicShipBoardBuilder>(activeProfile->player, rows, cols, redProfile.shipBoard, blueProfile.shipBoard, redShips, blueShips);
 }
 
 Color BasicGameModel::getActivePlayer() const {
@@ -92,7 +93,7 @@ HitStatus BasicGameModel::strike(Point position) {
     activeProfile->hitBoard->struck(position, status);
 
     // if the ship struck by this attack resulted in sinking the ship, report to controller
-    if (status == HitStatus::HIT && inactiveProfile->shipBoard->get(position).getShip().status() == ShipStatus::SUNK) {
+    if (status == HitStatus::HIT && inactiveProfile->shipBoard->get(position)->getShip().status() == ShipStatus::SUNK) {
         controller->battleShipSunk(inactiveProfile->player);
     }
 
@@ -120,3 +121,5 @@ void BasicGameModel::setListener(TurnListener* controller) {
         this->controller = controller;
     }
 }
+
+BasicGameModel::~BasicGameModel() {}
