@@ -9,4 +9,11 @@ enum Color {
     BLUE
 };
 
+class ColorOther {
+    public:
+    static const Color other(Color player) {
+        return player == Color::RED ? Color::BLUE : Color::RED;
+    }
+};
+
 #endif

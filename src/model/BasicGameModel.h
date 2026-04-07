@@ -3,16 +3,39 @@
 
 #include "include/GameModel.h"
 
-class BasicShipModel : public GameModel {
+class BasicGameModel : public GameModel {
     private:
+    
+    struct Profile {
+        Color player;
+        ShipBoard* shipBoard;
+        HitBoard* hitBoard;
+        int numShips;
+    };
 
-    HitBoard board;
+    int rows;
+    int cols;
+
+    Profile* activeProfile;
+    Profile* inactiveProfile;
+
+    Profile redProfile;
+    Profile blueProfile;
+
+    TurnListener* controller;
+
+    bool started;
+
+    void checkBounds(Point position) const;
+    void checkStarted() const;
+
+    friend HitBoard;
 
     public:
 
-    BasicShipModel() {}
+    BasicGameModel();
 
-    ShipBoardBuilder start(int rows, int cols, std::vector<Ship> redShips, std::vector<Ship> blueShips) override;
+    ShipBoardBuilder* start(int rows, int cols, std::vector<Ship> redShips, std::vector<Ship> blueShips) override;
 
     Color getActivePlayer() const override;
 
@@ -20,11 +43,13 @@ class BasicShipModel : public GameModel {
 
     HitStatus strike(Point position) override;
 
-    const HitBoard& getHits(Color player) override;
+    const HitBoard& getHits(Color player) const override;
 
-    const ShipBoard& getShips(Color player) override;
+    const ShipBoard& getShips(Color player) const override;
 
     void setListener(TurnListener* controller) override;
+
+    ~BasicGameModel();
 };
 
 #endif

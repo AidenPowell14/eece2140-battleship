@@ -26,7 +26,8 @@ class ShipBoardBuilder {
      * @param ship the ship to place
      * @param position the leftmost or topmost point to place to
      * @param horizontal if the ship should be placed horizontally or not
-     * @throws std::invalid_argument if the point does not exist
+     * @throws std::invalid_argument if the point does not exist, or the ship does
+     * not fit in bounds for the given position
      */
     virtual void setShip(Color player, Ship& ship, Point position, bool horizontal) = 0;
 
@@ -50,7 +51,16 @@ class ShipBoardBuilder {
      * @param position the position to remove from
      * @throws std::invalid_argument if the position does not exist
      */
-    virtual void removeShip(Color player, Point position) = 0;
+    //virtual void removeShip(Color player, Point position) = 0;
+
+    /**
+     * Return a list of all of a player's ships that they must place.
+     * This list is immutable, and does not reflect the ships not yet placed.
+     * 
+     * @param player the player to check the inventory of 
+     * @return std::vector<Ship> all of that player's ships in play
+     */
+    virtual const std::vector<Ship> getShips(Color player) const = 0;
 
     virtual ~ShipBoardBuilder() = default;
 

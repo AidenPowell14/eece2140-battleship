@@ -37,13 +37,27 @@ class ShipBoard {
     virtual const ShipNode& get(Point position) const = 0;
 
     /**
-     * Sends a missile to the specified position on this ShipBoard
+     * Sends a missile to the specified position on this ShipBoard.
      * 
      * @param position the position to set a status at
-     * @param status the status to set at this point (hit or miss)
+     * @return HitStatus the result of this attack, if it hit a ship or not
      * @throws std::invalid_argument if the point does not exist
      */
     virtual HitStatus strike(Point position) = 0;
+
+    /**
+     * Gets the number of rows in this board.
+     * 
+     * @return const int height of board
+     */
+    virtual const int rows() const = 0;
+
+    /**
+     * Gets the number of columns in this board.
+     * 
+     * @return const int width of the board
+     */
+    virtual const int cols() const = 0;
 
     virtual ~ShipBoard() = default;
 };
