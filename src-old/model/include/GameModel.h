@@ -9,6 +9,7 @@
 #include "HitBoard.h"
 #include "ShipBoard.h"
 #include "TurnListener.h"
+#include <memory>
 
 #define MAX_SHIP_RATIO 0.5
 

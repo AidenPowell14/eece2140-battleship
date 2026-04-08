@@ -4,6 +4,7 @@
 #include "include/ShipBoardBuilder.h"
 #include "include/ShipNode.h"
 #include <vector>
+#include <memory>
 
 class BasicShipBoardBuilder : public ShipBoardBuilder {
     private:
@@ -41,6 +42,8 @@ class BasicShipBoardBuilder : public ShipBoardBuilder {
     const std::vector<Ship*>& getShips(Color player) const override;
 
     //void removeShip(Color player, Point position) override;
+
+    ~BasicShipBoardBuilder();
 };
 
 #endif

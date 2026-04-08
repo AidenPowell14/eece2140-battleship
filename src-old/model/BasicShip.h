@@ -21,6 +21,8 @@ class BasicShip : public Ship {
     ShipStatus status() const override;
 
     ShipStatus takeHit() override;
+
+    ~BasicShip();
 };
 
 #endif

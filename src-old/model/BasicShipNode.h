@@ -17,6 +17,8 @@ class BasicShipNode : public ShipNode {
     const Ship& getShip() const override;
 
     ShipStatus strike() override;
+
+    ~BasicShipNode();
 };
 
 #endif

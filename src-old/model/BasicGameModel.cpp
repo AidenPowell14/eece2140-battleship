@@ -67,7 +67,7 @@ std::unique_ptr<ShipBoardBuilder> BasicGameModel::start(int rows, int cols, std:
     blueProfile.numShips = blueShips.size();
 
     started = true;
-    return std::make_unique<BasicShipBoardBuilder>(activeProfile->player, rows, cols, redProfile.shipBoard, blueProfile.shipBoard, redShips, blueShips);
+    return std::make_unique<BasicShipBoardBuilder>(activeProfile->player, rows, cols, &redProfile.shipBoard, &blueProfile.shipBoard, redShips, blueShips);
 }
 
 Color BasicGameModel::getActivePlayer() const {
@@ -84,7 +84,7 @@ HitStatus BasicGameModel::strike(Point position) {
     checkStarted();
     checkBounds(position);
     // check they haven't struck this position previously
-    if (activeProfile->hitBoard->get(position) != NULL) {
+    if ((activeProfile->hitBoard->get(position)) != HitStatus::NONE) {
         throw std::invalid_argument("Position has already been struck");
     }
 

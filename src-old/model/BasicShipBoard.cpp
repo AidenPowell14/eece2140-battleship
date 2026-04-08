@@ -2,14 +2,14 @@
 #include <vector>
 #include <stdexcept>
 
-BasicShipBoard::BasicShipBoard(std::vector<std::vector<ShipNode*>> board, int rows, int cols, Color player) : 
+BasicShipBoard::BasicShipBoard(std::vector<std::vector<std::unique_ptr<ShipNode>>> board, int rows, int cols, Color player) : 
 board(board), numRows(rows), numCols(cols), owner(player) {}
 
 Color BasicShipBoard::getOwner() const {
     return owner;
 }
 
-const ShipNode* BasicShipBoard::get(Point position) const {
+const std::unique_ptr<ShipNode> BasicShipBoard::get(Point position) const {
     if (position.row < 0 || position.row > numRows || position.col < 0 || position.col > numCols) {
         throw std::invalid_argument("Position is out of bounds");
     }

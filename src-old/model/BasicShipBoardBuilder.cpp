@@ -7,19 +7,28 @@
 bool BasicShipBoardBuilder::redSealed = false;
 bool BasicShipBoardBuilder::blueSealed = false;
 
-BasicShipBoardBuilder::BasicShipBoardBuilder(
+BasicShipBoardBuilder::BasicShipBoardBuilder
+(
     Color startingPlayer, 
     int rows, int cols, 
     std::unique_ptr<ShipBoard>* redBoardDest, std::unique_ptr<ShipBoard>* blueBoardDest, 
-    std::vector<Ship*>& redShips, std::vector<Ship*>& blueShips) :
+    std::vector<Ship*>& redShips, std::vector<Ship*>& blueShips
+) :
     redBoard(rows, std::vector<std::unique_ptr<ShipNode>>(cols, nullptr)), 
     blueBoard(rows, std::vector<std::unique_ptr<ShipNode>>(cols, nullptr)),
     redShipDest(redBoardDest), blueShipDest(blueBoardDest),     
     rows(rows), cols(cols),
     activePlayer(startingPlayer), 
-    redShips(redShips), blueShips(blueShips) {
+    redShips(redShips), blueShips(blueShips) 
+{
     if (redShips.empty() || blueShips.empty()) {
         throw std::invalid_argument("Both players must have at least one ship");
+    }
+    redBoard.resize(rows);
+    blueBoard.resize(rows);
+    for (int i = 0; i < rows; i++) {
+        redBoard[i].resize(cols);
+        blueBoard[i].resize(cols);
     }
 }
 
