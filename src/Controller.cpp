@@ -105,7 +105,7 @@ void Controller::startAttacks() {
                 HitStatus status = model.strike(Point {row - 1, col - 1});
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');                
                 showHits();
-                std::cout << "Striking " << std::toupper(static_cast<char>(strRow)) << col << " resulted in a " << print(status) << ".\n";
+                std::cout << "Striking " << static_cast<char>(std::toupper(row + 64)) << col << " resulted in a " << print(status) << ".\n";
                 if (sunk) {
                     std::cout << print(activePlayer) << " has sunk " << print((activePlayer == Color::RED ? Color::BLUE : Color::RED)) << "'s battleship!\n";
                     sunk = false;
@@ -170,7 +170,7 @@ void Controller::promptPlaceShip(int size) {
             }
             model.setShip(Point {row - 1, col - 1}, size, horizontal);
             showShips();
-            std::cout << "Ship was successfully placed " << (horizontal ? "horizontally" : "vertically") << " at " << std::toupper(static_cast<char>(row + 65)) << col << ".\n";
+            std::cout << "Ship was successfully placed " << (horizontal ? "horizontally" : "vertically") << " at " << static_cast<char>(std::toupper(row + 64)) << col << ".\n";
             valid = true;
             std::cin.ignore();
             wait();
