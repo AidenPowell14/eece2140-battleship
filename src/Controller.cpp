@@ -136,17 +136,22 @@ void Controller::startAttacks() {
     while (!winner) {
         showHits();
         std::cout << "Enter location to strike: ";
-        int row;
+        char strRow;
         int col;
         bool valid = false;
         do {
             try {
-                if (!(std::cin >> row >> col)) {
-                    throw IllegalOperation("Command arguments must be integers within board dimensions");
+                if (!(std::cin >> strRow)) {
+                    throw IllegalOperation("First command argument must be a letter within board dimensions");
                 }
+                if (!(std::cin >> col)) {
+                    throw IllegalOperation("Second command argument must be an integer within board dimensions");
+                }
+                int row = std::tolower(strRow) - 'a' + 1;
                 HitStatus status = model.strike(Point {row - 1, col - 1});
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');                
                 showHits();
-                std::cout << "Striking (" << row << ", " << col << ") resulted in a " << print(status) << ".\n";
+                std::cout << "Striking " << static_cast<char>(std::toupper(row + 64)) << col << " resulted in a " << print(status) << ".\n";
                 if (sunk) {
                     std::cout << print(activePlayer) << " has sunk " << print((activePlayer == Color::RED ? Color::BLUE : Color::RED)) << "'s battleship!\n";
                     sunk = false;
@@ -155,7 +160,7 @@ void Controller::startAttacks() {
                 if (winner) {
                     continue;
                 }
-                std::cin.ignore();
+                //std::cin.ignore();
                 wait();
             } catch (const IllegalOperation& badStrike) {
                 displayError(badStrike.what());
@@ -168,7 +173,6 @@ void Controller::startAttacks() {
             switchPlayer(activePlayer == Color::RED ? Color::BLUE : Color::RED);
         }
     }
-    //showHits();
     endGame();
     // program exits starting here
 }
@@ -187,28 +191,32 @@ void Controller::promptPlaceShip(int size) {
     showShips();
     std::cout << "Enter location and orientation for a " << size << "-long ship: ";
     bool valid = false;
-    int row;
+    char strRow;
     int col;
     char orientation;
     do {
         try {
-            if (!(std::cin >> row >> col)) {
-                throw IllegalOperation("First and second command arguments must be integers within board dimensions");
+            if (!(std::cin >> strRow)) {
+                throw IllegalOperation("First command argument must be a letter within board dimensions");
+            }
+            if (!(std::cin >> col)) {
+                throw IllegalOperation("Second command argument must be an integer within board dimensions");
             }
             if (!(std::cin >> orientation)) {
                 throw IllegalOperation("Third position command must be 'h' or 'v'");
             } 
+            int row = std::tolower(strRow) - 'a' + 1;
             bool horizontal;
-            if (!(std::tolower(orientation) - 104)) {
+            if (!(std::tolower(orientation) - 'h')) {
                 horizontal = true;
-            } else if (!(std::tolower(orientation) - 118)) {
+            } else if (!(std::tolower(orientation) - 'v')) {
                 horizontal = false;
             } else {
                 throw IllegalOperation("Third position command must be 'h' or 'v'");
             }
             model.setShip(Point {row - 1, col - 1}, size, horizontal);
             showShips();
-            std::cout << "Ship was successfully placed " << (horizontal ? "horizontally" : "vertically") << " at (" << row << ", " << col << ").\n";
+            std::cout << "Ship was successfully placed " << (horizontal ? "horizontally" : "vertically") << " at " << static_cast<char>(std::toupper(row + 64)) << col << ".\n";
             valid = true;
             std::cin.ignore();
             wait();

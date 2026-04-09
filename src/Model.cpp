@@ -4,8 +4,8 @@
 
 void Model::checkStartConditions(int rows, int cols, std::vector<int> redShips, std::vector<int> blueShips) {
     // check for invalid board size
-    if (rows < 0 || cols < 0) {
-        throw IllegalOperation("Board must have positive dimensions");
+    if (rows < 0 || rows > 26 || cols < 0 || cols > 26) {
+        throw IllegalOperation("Each board dimension must be between 1 and 26 cells");
     }
     // check for empty ship list
     if (redShips.empty() || blueShips.empty()) {
@@ -159,21 +159,6 @@ const std::vector<std::vector<HitStatus>>& Model::getHits(Color player) const {
 const std::vector<std::unique_ptr<Ship>>& Model::getShipPoints(Color player) const {
     checkGameStarted();
     return player == Color::RED ? redProfile.shipBoard->seeShips() : blueProfile.shipBoard->seeShips();
-
-
-    // const Profile& profile = player == Color::RED ? redProfile : blueProfile;
-    // std::vector<std::vector<Point>> allShips;
-    // for (auto& ship : profile.shipBoard->seeShips()) {
-    //     std::vector<Point> shipPoints;
-    //     // add every point of every ship to nested vector
-    //     for (int off = 0; off < ship->size; off++) {
-    //         int row = ship->start.row + (ship->horizontal ? 0 : off);
-    //         int col = ship->start.col + (ship->horizontal ? off : 0);
-    //         shipPoints.push_back(Point{row, col});
-    //     }
-    //     allShips.push_back(shipPoints);
-    // }
-    // return allShips;
 }
 
 int Model::rows() const {
