@@ -50,14 +50,60 @@ void Controller::showShips() const {
             }
         }        
     }
-    for (auto row : board) {
-        for (auto cell : row) {
-            std::cout << cell << " ";
+    for (int col = 0; col < model.cols()+1; col++) {
+        if (col == 0|| col == model.cols () ) {
+            
+            std::cout << "+";
         }
-        std::cout << std::endl;
-    }
-}
+        else{
+            std::cout << "-----";
 
+        }
+        
+
+    }
+    std::cout << "\n";
+    int lettergrid = 65;
+    for (int col = 0; col < model.cols()+1; col++) {
+        if (col == 0) {
+            
+            std::cout << "| " << "    ";
+        }    
+        else {
+            std::cout << col << "  ";
+
+
+        }
+        
+        
+    } 
+     std::cout << "| ";
+    
+    std::cout << "\n";
+    for (auto row : board) {
+        std::cout << "| " << static_cast<char>(lettergrid++) << "   ";
+
+
+        for (auto cell : row) {
+            std::cout << cell << "  ";
+        }
+        std::cout << "| \n";
+    }
+    for (int col = 0; col < model.cols()+1; col++) {
+        if (col == 0|| col == model.cols () ) {
+            
+            std::cout << "+";
+        }
+        else{
+            std::cout << "-----";
+
+        }
+        
+
+    }
+    std::cout << "\n";
+}
+    
 const std::string Controller::print(Color player) const {
     return player == Color::RED ? "RED" : "BLUE";
 }
