@@ -5,6 +5,7 @@
 #include "../../data/Point.h"
 #include "Ship.h"
 #include "ShipBoard.h"
+#include <vector>
 
 /**
  * Interface for a one-time-use builder class used to configure each player's 
@@ -26,19 +27,19 @@ class ShipBoardBuilder {
      * @param ship the ship to place
      * @param position the leftmost or topmost point to place to
      * @param horizontal if the ship should be placed horizontally or not
-     * @throws std::invalid_argument if the point does not exist
+     * @throws std::invalid_argument if the point does not exist, or the ship does
+     * not fit in bounds for the given position
      */
     virtual void setShip(Color player, Ship& ship, Point position, bool horizontal) = 0;
 
     /**
      * Confirms that the ShipBoard is complete for the designated player.
-     * Once this method is called, the returned ShipBoard is completely fixed 
+     * Once this method is called, the ShipBoard is completely fixed 
      * in its positions, only able to update the state of each ShipNode within.
      *
      * @param player the player to seal the ShipBoard of
-     * @return ShipBoard* pointer to the newly-created and sealed ShipBoard
      */
-    virtual ShipBoard* submit(Color player) = 0;
+    virtual void submit(Color player) = 0;
 
     /**
      * Removes the ship that occupies this position, and collects them for replacement.
@@ -50,7 +51,16 @@ class ShipBoardBuilder {
      * @param position the position to remove from
      * @throws std::invalid_argument if the position does not exist
      */
-    virtual void removeShip(Color player, Point position) = 0;
+    //virtual void removeShip(Color player, Point position) = 0;
+
+    /**
+     * Return a list of all of a player's ships that they must place.
+     * This list is immutable, and does not reflect the ships not yet placed.
+     * 
+     * @param player the player to check the inventory of 
+     * @return std::vector<Ship> all of that player's ships in play
+     */
+    virtual const std::vector<Ship*>& getShips(Color player) const = 0;
 
     virtual ~ShipBoardBuilder() = default;
 

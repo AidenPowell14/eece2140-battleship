@@ -9,6 +9,7 @@
 #include "HitBoard.h"
 #include "ShipBoard.h"
 #include "TurnListener.h"
+#include <memory>
 
 #define MAX_SHIP_RATIO 0.5
 
@@ -28,22 +29,23 @@ class GameModel {
      * The returned ShipBoardBuilder kicks off ship placement on the ShipBoard.
      * Once the placement phase is complete, subsequent turns will be handled outside of this method.
      * For each player, the sum of all of their ship's sizes must be at most MAX_SHIP_RATIO of the total area of 
-     * the board. This ensures the player will be able to comfortably place all of their ships
+     * the board. This ensures the player will be able to comfortably place all of their ships.
      * 
      * @param rows the number of rows to play with
      * @param cols the number of columns to play with
-     * @param redShips a list of ships for the red player to play with
-     * @param blueShips a list of ships for the blue player to play with
-     * @return ShipBoardBuilder builder object to conduct ship placement through
+     * @param redShips a list of pointers to ships for the red player to play with
+     * @param blueShips a list of pointers to ships for the blue player to play with
+     * @return std::unique_ptr<ShipBoardBuilder> pointer to builder object to conduct ship placement through
      * @throws std::invalid_argument if the board can't be created, or there are too many
-     * or too few (namely zero) ships to play with
+     * or too few (namely zero) ships to play with, or any one ship is longer than the board
      */
-    virtual ShipBoardBuilder start(int rows, int cols, std::vector<Ship> redShips, std::vector<Ship> blueShips) = 0;
+    virtual std::unique_ptr<ShipBoardBuilder> start(int rows, int cols, std::vector<Ship*> redShips, std::vector<Ship*> blueShips) = 0;
 
     /**
      *  Returns the active player who should be making a move.
      * 
      * @return Color of active player
+     * @throws std::invalid_argument if the game hasn't started
      */
     virtual Color getActivePlayer() const = 0;
 
@@ -53,6 +55,7 @@ class GameModel {
      * 
      * @return true the game is over
      * @return false the game is not over
+     * @throws std::invalid_argument if the game hasn't started
      */
     virtual bool isGameOver() const = 0;
 
@@ -68,7 +71,7 @@ class GameModel {
      * @param position the position to strike
      * @return HitStatus the status of the strike (hit or miss)
      * @throws std::invalid_argument if the position does not exist,
-     * or this position has been struck before
+     * this position has been struck before, or tghe hasn't started
      */
     virtual HitStatus strike(Point position) = 0;
 
@@ -76,12 +79,13 @@ class GameModel {
      * Retrieves the HitBoard for the specified player.
      * The HitBoard contains all the player's information about 
      * their own strikes on the opposing player. Effectively, this 
-     * will be a grid of hits, misses, or null.
+     * will be a grid of hits, misses, or none (never struck).
      * 
      * @param player the player whose HitBoard should be retrieved
      * @return const HitBoard& reference to that player's HitBoard
+     * @throws std::invalid_argument if the game hasn't started
      */
-    virtual const HitBoard& getHits(Color player) = 0;
+    virtual const HitBoard& getHits(Color player) const = 0;
 
     /**
      * @brief Retrieves the ShipBoard for the specified player.
@@ -92,8 +96,9 @@ class GameModel {
      * 
      * @param player  the player whose ShipBoard should be retrieved
      * @return const ShipBoard& reference to that player's ShipBoard
+     * @throws std::invalid_argument if the game hasn't started
      */
-    virtual const ShipBoard& getShips(Color player) = 0;
+    virtual const ShipBoard& getShips(Color player) const = 0;
 
     /**
      * Sets a listener to this model that can receive publications about player actions, 
