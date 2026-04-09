@@ -52,11 +52,11 @@ class Model {
 
     void setShip(Point start, int size, bool horizontal);
 
-    bool isGameOver(Color* winner) const;
+    Color isGameOver() const;
 
     const std::vector<std::vector<HitStatus>>& getHits(Color player) const;
 
-    std::vector<std::vector<Point>> getShipPoints(Color player) const;
+    const std::vector<std::unique_ptr<Ship>>& getShipPoints(Color player) const;
 
     int rows() const;
 

@@ -10,13 +10,10 @@ struct Point {
 };
 
 enum Color {
+    NEITHER,
     RED,
     BLUE
 };
-
-// inline Color otherColor(Color player) {
-//     return player == Color::RED ? Color::BLUE : Color::RED;
-// }
 
 enum HitStatus {
     NONE,

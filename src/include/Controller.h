@@ -13,10 +13,15 @@ class Controller {
     Color activePlayer;
     Model& model;
 
+    bool gameOver = false;
+    Color winner = Color::NEITHER;
+    bool sunk = false;
+
     void showHits() const;
     void showShips() const;
 
-    void endGame(Color winner);
+    void endGame();
+    void wait() const;
 
     const std::string print(Color player) const;
     const std::string print(HitStatus status) const;
@@ -25,9 +30,11 @@ class Controller {
 
     Controller(Model& model);
 
+    void preface() const;
+
     void switchPlayer(Color player);
 
-    void takeTurn();
+    void startAttacks();
 
     void displayError(std::string message) const;
 

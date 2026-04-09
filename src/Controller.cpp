@@ -5,8 +5,13 @@
 #include <string>
 #include <cctype>
 
-void Controller::endGame(Color winner) {
+void Controller::endGame() {
+    std::cout << "The " << print(winner) << " player has won! Restart the program to play again.\n";
+}
 
+void Controller::wait() const {
+    std::cout << "Press ENTER to continue.\n";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void Controller::showHits() const {
@@ -30,14 +35,26 @@ void Controller::showHits() const {
 void Controller::showShips() const {
     std::cout << "\033[2J\033[1;1H";
     std::cout << "shipboard\n";
-    auto board = std::vector(model.rows(), std::string(2 * model.cols() - 1, 'O'));
-    for (std::vector<Point> shipPoints : model.getShipPoints(activePlayer)) {
-        for (Point point : shipPoints) {
-            board[point.row][point.col * 2] = 'X';
+    auto board = std::vector(model.rows(), std::vector<char>(model.cols(), 'O'));
+    for (auto& ship : model.getShipPoints(activePlayer)) {
+        // sets '*' for each hit cell of each ship
+        for (Point point : ship->hitLocs) {
+            board[point.row][point.col] = '*';
         }
+        // sets 'X' for the rest of each ship
+        for (int off = 0; off < ship->size; off++) {
+            int row = ship->start.row + (ship->horizontal ? 0 : off);
+            int col = ship->start.col + (ship->horizontal ? off : 0);
+            if (board[row][col] == 'O') {
+                board[row][col] = 'X';
+            }
+        }        
     }
-    for (std::string row : board) {
-        std::cout << row << std::endl;
+    for (auto row : board) {
+        for (auto cell : row) {
+            std::cout << cell << " ";
+        }
+        std::cout << std::endl;
     }
 }
 
@@ -57,37 +74,57 @@ const std::string Controller::print(HitStatus status) const {
 
 Controller::Controller(Model& model) : model(model) {}
 
+void Controller::preface() const {
+    std::cout << "*******Explain the rules here\n";
+    wait();
+}
+
 void Controller::switchPlayer(Color player) {
     activePlayer = player;
     std::cout << "\033[2J\033[1;1H"; // clears screen
-    std::cout << "It is now " << print(player) << "'s turn. Press ENTER if you are the " << print(player) << " player.";
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    //std::cout << "\033[2J\033[1;1H";
+    std::cout << "It is now " << print(player) << "'s turn.\n";
+    wait();
 }
 
-void Controller::takeTurn() {
-    showHits();
-    std::cout << "Enter location to strike: ";
-    int row;
-    int col;
-    bool valid = false;
-    do {
-        try {
-            if (!(std::cin >> row && std::cin >> col)) {
-                throw IllegalOperation("Command arguments must be integers within board dimensions");
+void Controller::startAttacks() {
+    while (!winner) {
+        showHits();
+        std::cout << "Enter location to strike: ";
+        int row;
+        int col;
+        bool valid = false;
+        do {
+            try {
+                if (!(std::cin >> row >> col)) {
+                    throw IllegalOperation("Command arguments must be integers within board dimensions");
+                }
+                HitStatus status = model.strike(Point {row - 1, col - 1});
+                showHits();
+                std::cout << "Striking (" << row << ", " << col << ") resulted in a " << print(status) << ".\n";
+                if (sunk) {
+                    std::cout << print(activePlayer) << " has sunk " << print((activePlayer == Color::RED ? Color::BLUE : Color::RED)) << "'s battleship!\n";
+                    sunk = false;
+                }
+                valid = true;
+                if (winner) {
+                    continue;
+                }
+                std::cin.ignore();
+                wait();
+            } catch (const IllegalOperation& badStrike) {
+                displayError(badStrike.what());
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Try again: ";      
             }
-            std::cin.ignore();
-            HitStatus status = model.strike(Point {row, col});
-            std::cout << "Striking (" << row << ", " << col << ") resulted in a " << print(status) << ".\n";
-            valid = true;
-        } catch (const IllegalOperation& badStrike) {
-            displayError(badStrike.what());
-            std::cout << "Try again: ";      
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } while (!valid);
+        if (!winner) {
+            switchPlayer(activePlayer == Color::RED ? Color::BLUE : Color::RED);
         }
-    } while (!valid);
-    // program returns here
+    }
+    //showHits();
+    endGame();
+    // program exits starting here
 }
 
 void Controller::displayError(std::string message) const {
@@ -96,11 +133,8 @@ void Controller::displayError(std::string message) const {
 
 
 void Controller::sunkBattleship() {
-    std::cout << activePlayer << "has sunk " << (activePlayer == Color::RED ? Color::BLUE : Color::RED) << "'s battleship!\n";
-    Color winner;
-    if (model.isGameOver(&winner)) {
-        endGame(winner);
-    }
+    sunk = true;
+    winner = model.isGameOver();
 }
 
 void Controller::promptPlaceShip(int size) {
@@ -112,7 +146,7 @@ void Controller::promptPlaceShip(int size) {
     char orientation;
     do {
         try {
-            if (!(std::cin >> row && std::cin >> col)) {
+            if (!(std::cin >> row >> col)) {
                 throw IllegalOperation("First and second command arguments must be integers within board dimensions");
             }
             if (!(std::cin >> orientation)) {
@@ -126,9 +160,12 @@ void Controller::promptPlaceShip(int size) {
             } else {
                 throw IllegalOperation("Third position command must be 'h' or 'v'");
             }
-            std::cin.ignore();
             model.setShip(Point {row - 1, col - 1}, size, horizontal);
+            showShips();
+            std::cout << "Ship was successfully placed " << (horizontal ? "horizontally" : "vertically") << " at (" << row << ", " << col << ").\n";
             valid = true;
+            std::cin.ignore();
+            wait();
         } catch (const IllegalOperation& badMove) {
             displayError(badMove.what());
             std::cout << "Try again: ";

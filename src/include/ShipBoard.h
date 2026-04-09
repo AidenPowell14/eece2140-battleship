@@ -9,7 +9,7 @@ struct Ship {
     Point start;
     int size;
     bool horizontal;
-    int hits = 0;
+    std::vector<Point> hitLocs;
 };
 
 class ShipBoard {
