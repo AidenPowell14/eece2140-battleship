@@ -15,21 +15,21 @@ void Model::checkStartConditions(int rows, int cols, std::vector<int> redShips, 
     int blueSum = 0;
     for (int length : redShips) {
         // check for ship longer than board
-        if (length > rows || length > cols) {
+        if (length > rows && length > cols) {
             throw IllegalOperation("Cannot play with ships larger than board");
         }
         redSum += length;
     }
     for (int length : blueShips) {
         // check for ship longer than board
-        if (length > rows || length > cols) {
+        if (length > rows && length > cols) {
             throw IllegalOperation("Cannot play with ships larger than board");
         }
         blueSum += length;
     }
     // check total area occupied isn't greater than MAX_OCCUPIED_AREA
     if ((double) redSum / (rows * cols) > MAX_OCCUPIED_AREA || (double) blueSum / (rows * cols) > MAX_OCCUPIED_AREA) {
-        throw IllegalOperation("Cannot comfortably fit this many ships on board of this size");
+        throw IllegalOperation("Cannot comfortably fit ships on board of this size");
     }
 }
 
@@ -44,8 +44,8 @@ void Model::switchActive() {
         activeProfile = &blueProfile;
         inactiveProfile = &redProfile;
     } else {
-        activeProfile = &blueProfile;
-        inactiveProfile = &redProfile;
+        activeProfile = &redProfile;
+        inactiveProfile = &blueProfile;
     }
 }
 
@@ -84,6 +84,7 @@ void Model::start(int rows, int cols, std::vector<int> redShips, std::vector<int
             controller->promptPlaceShip(length);
         }
     }
+    redProfile.shipBoard->seal();
     // give controller a chance to flush display
     switchActive();
     if (controller) {
@@ -94,10 +95,11 @@ void Model::start(int rows, int cols, std::vector<int> redShips, std::vector<int
             controller->promptPlaceShip(length);
         }
     }
+    blueProfile.shipBoard->seal();
     switchActive();
     if (controller) {
         controller->switchPlayer(Color::RED);
-        controller->takeTurn();
+        controller->startAttacks();
     }
 }
 
@@ -119,8 +121,8 @@ HitStatus Model::strike(Point pos) {
             if (pos.row == row && pos.col == col) {
                 // on hit, update attacker view, reduce ship health, switch players, report hit
                 activeProfile->hitBoard->struck(pos, HitStatus::HIT);
-                ship->hits++;
-                if (ship->hits == ship->size) {
+                ship->hitLocs.push_back(pos);
+                if (ship->hitLocs.size() == ship->size) {
                     inactiveProfile->ships--;
                     controller->sunkBattleship();
                 }
@@ -140,16 +142,13 @@ void Model::setShip(Point start, int size, bool horizontal) {
     activeProfile->shipBoard->addShip(start, size, horizontal, numRows, numCols);
 }
 
-bool Model::isGameOver(Color* winner) const {
+Color Model::isGameOver() const {
     if (redProfile.ships == 0) {
-        *winner = Color::BLUE; 
-        return true;
+        return Color::BLUE;
     } else if (blueProfile.ships == 0) {
-        *winner = Color::RED;
-        return true;
+        return Color::RED;
     }
-    winner = nullptr;
-    return false;
+    return Color::NEITHER;
 }
 
 const std::vector<std::vector<HitStatus>>& Model::getHits(Color player) const {
@@ -157,21 +156,24 @@ const std::vector<std::vector<HitStatus>>& Model::getHits(Color player) const {
     return player == Color::RED ? redProfile.hitBoard->get() : blueProfile.hitBoard->get();
 }
 
-std::vector<std::vector<Point>> Model::getShipPoints(Color player) const {
+const std::vector<std::unique_ptr<Ship>>& Model::getShipPoints(Color player) const {
     checkGameStarted();
-    const Profile& profile = player == Color::RED ? redProfile : blueProfile;
-    std::vector<std::vector<Point>> allShips;
-    for (auto& ship : profile.shipBoard->seeShips()) {
-        std::vector<Point> shipPoints;
-        // add every point of every ship to nested vector
-        for (int off = 0; off < ship->size; off++) {
-            int row = ship->start.row + (ship->horizontal ? 0 : off);
-            int col = ship->start.col + (ship->horizontal ? off : 0);
-            shipPoints.push_back(Point{row, col});
-        }
-        allShips.push_back(shipPoints);
-    }
-    return allShips;
+    return player == Color::RED ? redProfile.shipBoard->seeShips() : blueProfile.shipBoard->seeShips();
+
+
+    // const Profile& profile = player == Color::RED ? redProfile : blueProfile;
+    // std::vector<std::vector<Point>> allShips;
+    // for (auto& ship : profile.shipBoard->seeShips()) {
+    //     std::vector<Point> shipPoints;
+    //     // add every point of every ship to nested vector
+    //     for (int off = 0; off < ship->size; off++) {
+    //         int row = ship->start.row + (ship->horizontal ? 0 : off);
+    //         int col = ship->start.col + (ship->horizontal ? off : 0);
+    //         shipPoints.push_back(Point{row, col});
+    //     }
+    //     allShips.push_back(shipPoints);
+    // }
+    // return allShips;
 }
 
 int Model::rows() const {

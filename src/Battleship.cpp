@@ -13,6 +13,7 @@ int main(int argc, char* argv[]) {
     Controller controller(model);
     model.setListener(&controller);
     try {
+        controller.preface();
         model.start(std::stoi(argv[1]), std::stoi(argv[2]), ShipReader::read(argv[3]), ShipReader::read(argv[4]));
     } catch (const IllegalOperation& badArgs) {
         std::cout << "Failed to start game. " << badArgs.what() << ". Exiting...\n";
