@@ -1,38 +1,31 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include "ShipBoard.h"
-#include "HitBoard.h"
 #include <memory>
+#include <stdexcept>
 
 struct Point {
     int row;
     int col;
 };
 
-bool betweenRow(Point test, int a, int b) {
-    return (test.row > a && test.row < b) || (test.row < a && test.row > b);
-}
-
-bool betweenCol(Point test, int a, int b) {
-    return (test.col > a && test.col < b) || (test.col < a && test.col > b);
-}
-
 enum Color {
     RED,
     BLUE
 };
 
-struct Profile {
-    Color player;
-    std::unique_ptr<ShipBoard> shipBoard;
-    std::unique_ptr<HitBoard> hitBoard;
-};
+// inline Color otherColor(Color player) {
+//     return player == Color::RED ? Color::BLUE : Color::RED;
+// }
 
 enum HitStatus {
     NONE,
     MISS,
     HIT
+};
+
+struct IllegalOperation : std::runtime_error {
+    using std::runtime_error::runtime_error;
 };
 
 #endif

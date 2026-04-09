@@ -4,15 +4,23 @@
 #include "data.h"
 #include "ShipBoard.h"
 #include "HitBoard.h"
-#include "Controller.h"
 #include <memory>
 #include <vector>
 #include <string>
 
 #define MAX_OCCUPIED_AREA 0.5
 
+class Controller;
+
 class Model {
     private:
+
+    struct Profile {
+        Color player;
+        std::unique_ptr<ShipBoard> shipBoard;
+        std::unique_ptr<HitBoard> hitBoard;
+        int ships;
+    };
 
     Profile redProfile = Profile {Color::RED, nullptr, nullptr};
     Profile blueProfile = Profile {Color::BLUE, nullptr, nullptr};
@@ -27,24 +35,28 @@ class Model {
 
     bool started = false;
 
-    bool checkStartConditions(int rows, int cols, std::vector<int> redShips, std::vector<int> blueShips);
-    bool checkGameStarted();
+    void checkStartConditions(int rows, int cols, std::vector<int> redShips, std::vector<int> blueShips);
+    void checkGameStarted() const;
 
-    void publishError(std::string message);
+    void switchActive();
+
+    void publishError(std::string message) const;
 
     public:
 
     Model();
 
-    bool start(int rows, int cols, std::vector<int> redShips, std::vector<int> blueShips);
+    void start(int rows, int cols, std::vector<int> redShips, std::vector<int> blueShips);
 
     HitStatus strike(Point pos);
 
-    bool setShip(Color player, Point start, int size, bool horizontal);
+    void setShip(Point start, int size, bool horizontal);
 
-    const std::vector<std::vector<HitStatus>> getHits(Color player) const;
+    bool isGameOver(Color* winner) const;
 
-    const std::vector<std::vector<Point>> getShipPoints(Color player) const;
+    const std::vector<std::vector<HitStatus>>& getHits(Color player) const;
+
+    std::vector<std::vector<Point>> getShipPoints(Color player) const;
 
     int rows() const;
 

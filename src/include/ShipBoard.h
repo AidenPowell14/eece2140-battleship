@@ -9,26 +9,27 @@ struct Ship {
     Point start;
     int size;
     bool horizontal;
+    int hits = 0;
 };
 
 class ShipBoard {
     private:
 
     const Color player;
-    const int numRows;
-    const int numCols;
 
     std::vector<std::unique_ptr<Ship>> ships;
 
     bool sealed = false;
 
+    bool checkPointBetween(Point test, Point a, Point b);
+
     public:
 
-    ShipBoard(Color owner, int rows, int cols);
+    ShipBoard(Color owner);
     
     const std::vector<std::unique_ptr<Ship>>& seeShips() const;
 
-    bool addShip(Point start, int size, bool horizontal);
+    void addShip(Point start, int size, bool horizontal, int numRows, int numCols);
 
     void seal();
 

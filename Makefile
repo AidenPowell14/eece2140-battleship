@@ -1,2 +1,2 @@
 build: src
-	g++ -o bin/battleship src/Battleship.cpp src/model/*.cpp
+	g++ -g -o bin/battleship src/*.cpp
