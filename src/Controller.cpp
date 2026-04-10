@@ -14,9 +14,29 @@ void Controller::wait() const {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-void Controller::showHits() const {
+std::string Controller::horizontalEdge() const { 
+    std::string edge = "+---";
+    for (int col = 0; col < model.cols(); col++) {
+        edge += "---";
+    }
+    edge += "-+\n";
+    return edge;
+}
+
+void Controller::showAll() const {
+    // clear screen;
     std::cout << "\033[2J\033[1;1H";
+    // upper edge
+    std::cout << horizontalEdge() << "|    ";
+    // ship header
+    for (int col = 1; col <= model.cols(); col++) {
+        std::cout << col << (col < 10 ? "  " : " ");
+    }
+    std::cout << "|\n";
+    // ship rows
+    int letterGrid = 65;
     for (std::vector<HitStatus> row : model.getHits(activePlayer)) {
+        std::cout << "| " << static_cast<char>(letterGrid++) << "  ";
         for (HitStatus status : row) {
             std::string mark;
             if (status == HitStatus::NONE) {
@@ -26,15 +46,18 @@ void Controller::showHits() const {
             } else {
                 mark = "*";
             }
-            std::cout << mark << " ";
+            std::cout << mark << "  ";
         }
-        std::cout << std::endl;
+        std::cout << "|\n";
     }
-}
-
-void Controller::showShips() const {
-    std::cout << "\033[2J\033[1;1H";
-    std::cout << "shipboard\n";
+    // middle edge
+    std::cout << horizontalEdge() + "|    ";
+    // hit header
+    for (int col = 1; col <= model.cols(); col++) {
+        std::cout << col << (col < 10 ? "  " : " ");
+    }
+    std::cout << "|\n";
+    // hit rows
     auto board = std::vector(model.rows(), std::vector<char>(model.cols(), 'O'));
     for (auto& ship : model.getShipPoints(activePlayer)) {
         // sets '*' for each hit cell of each ship
@@ -50,58 +73,16 @@ void Controller::showShips() const {
             }
         }        
     }
-    for (int col = 0; col < model.cols()+1; col++) {
-        if (col == 0|| col == model.cols () ) {
-            
-            std::cout << "+";
-        }
-        else{
-            std::cout << "-----";
-
-        }
-        
-
-    }
-    std::cout << "\n";
-    int lettergrid = 65;
-    for (int col = 0; col < model.cols()+1; col++) {
-        if (col == 0) {
-            
-            std::cout << "| " << "    ";
-        }    
-        else {
-            std::cout << col << "  ";
-
-
-        }
-        
-        
-    } 
-     std::cout << "| ";
-    
-    std::cout << "\n";
+    letterGrid = 65;
     for (auto row : board) {
-        std::cout << "| " << static_cast<char>(lettergrid++) << "   ";
-
-
+        std::cout << "| " << static_cast<char>(letterGrid++) << "  ";
         for (auto cell : row) {
             std::cout << cell << "  ";
         }
-        std::cout << "| \n";
+        std::cout << "|\n";
     }
-    for (int col = 0; col < model.cols()+1; col++) {
-        if (col == 0|| col == model.cols () ) {
-            
-            std::cout << "+";
-        }
-        else{
-            std::cout << "-----";
-
-        }
-        
-
-    }
-    std::cout << "\n";
+    // bottom edge
+    std::cout << horizontalEdge();
 }
     
 const std::string Controller::print(Color player) const {
@@ -121,7 +102,12 @@ const std::string Controller::print(HitStatus status) const {
 Controller::Controller(Model& model) : model(model) {}
 
 void Controller::preface() const {
-    std::cout << "*******Explain the rules here\n";
+    std::cout << "\033[2J\033[1;1H";
+    std::cout << "==== 2 PLAYER BATTLESHIP ====\n";
+    std::cout << "* Turns are taken sequentially, with a confirmation message\n  for each player to ensure a fair device handoff between turns.\n";
+    std::cout << "* Ship placement takes three space-separated arguments:\n  a letter row, integer column, and 'H' or 'V' for horizontal or veritcal orientation.\n"
+    << "  Ships will \"grow\" to the right or below the specified point.\n";
+    std::cout << "* Attacks only accept a letter row and integer column. Unstruck ships\n  will be represented with 'X', struck ships as '*', and empty spaces as 'O'.\n"; 
     wait();
 }
 
@@ -134,7 +120,7 @@ void Controller::switchPlayer(Color player) {
 
 void Controller::startAttacks() {
     while (!winner) {
-        showHits();
+        showAll();
         std::cout << "Enter location to strike: ";
         char strRow;
         int col;
@@ -150,7 +136,7 @@ void Controller::startAttacks() {
                 int row = std::tolower(strRow) - 'a' + 1;
                 HitStatus status = model.strike(Point {row - 1, col - 1});
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');                
-                showHits();
+                showAll();
                 std::cout << "Striking " << static_cast<char>(std::toupper(row + 64)) << col << " resulted in a " << print(status) << ".\n";
                 if (sunk) {
                     std::cout << print(activePlayer) << " has sunk " << print((activePlayer == Color::RED ? Color::BLUE : Color::RED)) << "'s battleship!\n";
@@ -188,7 +174,7 @@ void Controller::sunkBattleship() {
 }
 
 void Controller::promptPlaceShip(int size) {
-    showShips();
+    showAll();
     std::cout << "Enter location and orientation for a " << size << "-long ship: ";
     bool valid = false;
     char strRow;
@@ -215,7 +201,7 @@ void Controller::promptPlaceShip(int size) {
                 throw IllegalOperation("Third position command must be 'h' or 'v'");
             }
             model.setShip(Point {row - 1, col - 1}, size, horizontal);
-            showShips();
+            showAll();
             std::cout << "Ship was successfully placed " << (horizontal ? "horizontally" : "vertically") << " at " << static_cast<char>(std::toupper(row + 64)) << col << ".\n";
             valid = true;
             std::cin.ignore();
