@@ -2,7 +2,6 @@
 #define CONTROLLER_H
 
 #include "data.h"
-//#include "Model.h"
 #include <string>
 
 class Model;
@@ -17,14 +16,15 @@ class Controller {
     Color winner = Color::NEITHER;
     bool sunk = false;
 
-    void showHits() const;
-    void showShips() const;
+    void showAll() const;
 
     void endGame();
     void wait() const;
 
     const std::string print(Color player) const;
     const std::string print(HitStatus status) const;
+
+    std::string horizontalEdge() const;
 
     public:
 
