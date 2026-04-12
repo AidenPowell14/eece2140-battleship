@@ -4,13 +4,19 @@
 
 This is the final project for Northeastern University’s EECE2140, developed by Elliot Hill and Aiden Powell. This project implements a terminal-based version of the traditional board game Battleship using object oriented C++, and features a design sufficiently modular to be replaced in the future by a GUI-based system, AI players, and more.
 
+## Quick Start
+Compile: `make build`
+Run standard game: `make std`
+Run small demo game: `make small`
+Clean: `make clean`
+
+Program arguments: `./battleship-game \<num rows> \<num cols> \<filepath the red ships> \<filepath to blue ships>`
+Ship files should include only whitespace-separated integers. See `docs/standard.ships` as an example.
+
 ## Main Functionalities 
 - Start game - Allows user to choose grid size, number of ships, types of ships
 - Ship Placement - Allows user to place ships on the game board
 - Strike - lets the user attack a grid point
-
-## Design Summary
-Below are the primary functionalities a user can interface with
 
 ### Starting the game 
 
@@ -70,7 +76,7 @@ battleship/
 |   |--- invalid.ships
 |   |--- standard.ships
 |   |--- tiny.ships
-|   |--- TechnicalReport.pdf     % this document
+|   |--- TechnicalReport.pdf
 |--- src-old/                        
 |   |--- ...     % 20+ classes preserved for posterity
 |--- Makefile
