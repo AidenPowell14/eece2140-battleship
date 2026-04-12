@@ -76,7 +76,7 @@ battleship/
 |   |--- invalid.ships
 |   |--- standard.ships
 |   |--- tiny.ships
-|   |--- TechnicalReport.pdf
+|   |--- Battleship_Technical_Report.pdf
 |--- src-old/                        
 |   |--- ...     % 20+ classes preserved for posterity
 |--- Makefile
