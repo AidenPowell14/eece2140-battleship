@@ -14,46 +14,43 @@ Below are the primary functionalities a user can interface with
 
 ### Starting the game 
 
-Program starts from the command line with arguments regarding
-the board size and the ships to play with for each player. (input two numbers and compile the program using the desired ship config fi) After initializing, the
-program will display a screen discussing input syntax and basic rules. Each player
-can start with a different set of linear ships. Ship files must contain a series of
-whitespace-separated integers represeting the sizes of each of their ships.
-Input: number of rows, number of columns, filepath to ships for each player
-Output: Begins first prompt for ship placement from each player
-Contribution: Launches the program
+1. Program starts from the command line with arguments regarding the board size and the ships to play with for each player. (input two numbers and compile the program using the desired ship config file) 
+2. After initializing, the program will display a screen discussing input syntax and basic rules. Each player
+can start with a different set of linear ships. 
+3. Ship files must contain a series of whitespace-separated integers represeting the sizes of each of their ships.
+- Input: number of rows, number of columns, filepath to ships for each player
+- Output: Begins first prompt for ship placement from each player
+- Contribution: Launches the program
 
 ### Ship Placement
 
-In order, players are prompted to add their ships to their own boards.
-After this phase, it is impossible to edit one’s ship configuration. As explained
+1. In order, players are prompted to add their ships to their own boards. After this phase, it is impossible to edit one’s ship configuration. As explained
 in the rules, ships grow either downward or rightward (depending on orientation).
-Position requests that are out of bounds or would intersect with preexisting ships
+2. Position requests that are out of bounds or would intersect with preexisting ships
 are rejected. Once one player has placed all of their ships, a mutual confirmation
 screen prompts player transition acknowledgment, and then the process is repeated
 for the other player.
-Input: Row, column, and orientation
-Output: Confirmation of successful ship placement and proceeding to the next
-Contribution: Sets the game state for the rest of the game.
+- Input: Row, column, and orientation
+- Output: Confirmation of successful ship placement and proceeding to the next
+- Contribution: Sets the game state for the rest of the game.
 
 ### Strike
 
-Players take turns firing missiles at locations on each other’s boards
-until one player is left without any ships left. Each guess immediately returns a
-hit/miss report to the attacker, and then prompts another mutual confirmation
+1. Players take turns firing missiles at locations on each other’s boards
+until one player is left without any ships left. 
+2. Each guess immediately returns a hit/miss report to the attacker, and then prompts another mutual confirmation
 screen. If a complete battleship would be sunk as the result of an attack, an
-additional notification is raised, and the end of game condition is checked. An
-opponent’s strikes against a player are not displayed on the victim’s HitBoard unless
-the strike resulted in a direct hit.
-Input: Row and column
-Output: Hit/miss report, sunken battleship notification, end of game notification
-Contribution: Primary gameplay loop revolves around this process
+additional notification is raised, and the end of game condition is checked.
+3. An opponent’s strikes against a player are not displayed on the victim’s HitBoard unless the strike resulted in a direct hit.
+- Input: Row and column
+- Output: Hit/miss report, sunken battleship notification, end of game notification
+- Contribution: Primary gameplay loop revolves around this process
 
 
 
-Project structure: 
+#### Project structure: 
 
-battleship/
+``` battleship/
 |--- src/
 |   |--- include/
 |   |   |--- Controller.h
@@ -77,3 +74,4 @@ battleship/
 |   |--- ...     % 20+ classes preserved for posterity
 |--- Makefile
 `--- README.md
+```
