@@ -54,26 +54,26 @@ Contribution: Primary gameplay loop revolves around this process
 Project structure: 
 
 battleship/
-|-- src/
-|   |-- include/
-|   |   |-- Controller.h
-|   |   |-- data.h
-|   |   |-- HitBoard.h
-|   |   |-- Model.h
-|   |   |-- ShipBoard.h
-|   |   |-- ShiPReader.h
-|   |-- battleship.cpp      % main program
-|   |-- Controller.cpp
-|   |-- HitBoard.cpp
-|   |-- Model.cpp
-|   |-- ShipBoard.cpp
-|   |-- ShipReader.cpp
-|-- docs/
-|   |-- invalid.ships
-|   |-- standard.ships
-|   |-- tiny.ships
-|   |-- TechnicalReport.pdf     % this document
-|-- src-old/                        
-|   |-- ...     % 20+ classes preserved for posterity
-|-- Makefile
-`-- README.md
+|--- src/
+|   |--- include/
+|   |   |--- Controller.h
+|   |   |--- data.h
+|   |   |--- HitBoard.h
+|   |   |--- Model.h
+|   |   |--- ShipBoard.h
+|   |   |--- ShiPReader.h
+|   |--- battleship.cpp      % main program
+|   |--- Controller.cpp
+|   |--- HitBoard.cpp
+|   |--- Model.cpp
+|   |--- ShipBoard.cpp
+|   |--- ShipReader.cpp
+|--- docs/
+|   |--- invalid.ships
+|   |--- standard.ships
+|   |--- tiny.ships
+|   |--- TechnicalReport.pdf     % this document
+|--- src-old/                        
+|   |--- ...     % 20+ classes preserved for posterity
+|--- Makefile
+`--- README.md
