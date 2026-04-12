@@ -50,7 +50,8 @@ additional notification is raised, and the end of game condition is checked.
 
 #### Project structure: 
 
-``` battleship/
+``` 
+battleship/
 |--- src/
 |   |--- include/
 |   |   |--- Controller.h
