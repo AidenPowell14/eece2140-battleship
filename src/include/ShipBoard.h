@@ -17,6 +17,9 @@ class ShipBoard {
 
     const Color player;
 
+    const int numRows;
+    const int numCols;
+
     std::vector<std::unique_ptr<Ship>> ships;
 
     bool sealed = false;
@@ -25,11 +28,11 @@ class ShipBoard {
 
     public:
 
-    ShipBoard(Color owner);
+    ShipBoard(Color owner, int rows, int cols);
     
     const std::vector<std::unique_ptr<Ship>>& seeShips() const;
 
-    void addShip(Point start, int size, bool horizontal, int numRows, int numCols);
+    void addShip(Point start, int size, bool horizontal);
 
     void seal();
 

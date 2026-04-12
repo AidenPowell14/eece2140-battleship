@@ -1,8 +1,11 @@
 build: src
-	g++ -g -o bin/battleship src/*.cpp
+	g++ -g -o battleship-game src/*.cpp
 
 small: build
-	./bin/battleship 5 5 docs/tiny.ships docs/tiny.ships
+	./battleship-game 5 5 docs/tiny.ships docs/tiny.ships
 
 std: build
-	./bin/battleship 10 10 docs/standard.ships docs/standard.ships
+	./battleship-game 10 10 docs/standard.ships docs/standard.ships
+
+clean: 
+	rm -f battleship-game

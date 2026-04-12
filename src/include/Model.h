@@ -56,7 +56,7 @@ class Model {
 
     const std::vector<std::vector<HitStatus>>& getHits(Color player) const;
 
-    const std::vector<std::unique_ptr<Ship>>& getShipPoints(Color player) const;
+    const std::vector<std::unique_ptr<Ship>>& getShips(Color player) const;
 
     int rows() const;
 

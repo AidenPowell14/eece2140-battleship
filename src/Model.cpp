@@ -70,8 +70,8 @@ void Model::start(int rows, int cols, std::vector<int> redShips, std::vector<int
     // give each pllayer empty boards
     activeProfile->hitBoard = std::move(std::make_unique<HitBoard>(activeProfile->player, numRows, numCols));
     inactiveProfile->hitBoard = std::move(std::make_unique<HitBoard>(inactiveProfile->player, numRows, numCols));
-    activeProfile->shipBoard = std::move(std::make_unique<ShipBoard>(activeProfile->player));
-    inactiveProfile->shipBoard = std::move(std::make_unique<ShipBoard>(inactiveProfile->player));
+    activeProfile->shipBoard = std::move(std::make_unique<ShipBoard>(activeProfile->player, numRows, numCols));
+    inactiveProfile->shipBoard = std::move(std::make_unique<ShipBoard>(inactiveProfile->player, numRows, numCols));
     // set each player's number of ships before defeat
     redProfile.ships = redShips.size();
     blueProfile.ships = blueShips.size();
@@ -119,7 +119,7 @@ HitStatus Model::strike(Point pos) {
             int row = ship->start.row + (ship->horizontal ? 0 : off);
             int col = ship->start.col + (ship->horizontal ? off : 0);
             if (pos.row == row && pos.col == col) {
-                // on hit, update attacker view, reduce ship health, switch players, report hit
+                // on hit: update attacker view, reduce ship health, switch players, report hit
                 activeProfile->hitBoard->struck(pos, HitStatus::HIT);
                 ship->hitLocs.push_back(pos);
                 if (ship->hitLocs.size() == ship->size) {
@@ -139,7 +139,7 @@ HitStatus Model::strike(Point pos) {
 
 void Model::setShip(Point start, int size, bool horizontal) {
     checkGameStarted();
-    activeProfile->shipBoard->addShip(start, size, horizontal, numRows, numCols);
+    activeProfile->shipBoard->addShip(start, size, horizontal);
 }
 
 Color Model::isGameOver() const {
@@ -156,7 +156,7 @@ const std::vector<std::vector<HitStatus>>& Model::getHits(Color player) const {
     return player == Color::RED ? redProfile.hitBoard->get() : blueProfile.hitBoard->get();
 }
 
-const std::vector<std::unique_ptr<Ship>>& Model::getShipPoints(Color player) const {
+const std::vector<std::unique_ptr<Ship>>& Model::getShips(Color player) const {
     checkGameStarted();
     return player == Color::RED ? redProfile.shipBoard->seeShips() : blueProfile.shipBoard->seeShips();
 }

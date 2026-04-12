@@ -5,13 +5,13 @@ bool ShipBoard::checkPointBetween(Point test, Point a, Point b) {
     return test.row >= a.row && test.row <= b.row && test.col >= a.col && test.col <= b.col;
 }
 
-ShipBoard::ShipBoard(Color owner) : player(owner) {}
+ShipBoard::ShipBoard(Color owner, int rows, int cols) : player(owner), numRows(rows), numCols(cols) {}
 
 const std::vector<std::unique_ptr<Ship>>& ShipBoard::seeShips() const {
     return ships;
 }
 
-void ShipBoard::addShip(Point start, int size, bool horizontal, int numRows, int numCols) {
+void ShipBoard::addShip(Point start, int size, bool horizontal) {
     // sealed boards cannot be added to 
     if (sealed) {
         throw IllegalOperation("This board was already built -- cannot add any more ships");
