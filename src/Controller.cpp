@@ -59,7 +59,7 @@ void Controller::showAll() const {
     std::cout << "|\n";
     // hit rows
     auto board = std::vector(model.rows(), std::vector<char>(model.cols(), 'O'));
-    for (auto& ship : model.getShipPoints(activePlayer)) {
+    for (auto& ship : model.getShips(activePlayer)) {
         // sets '*' for each hit cell of each ship
         for (Point point : ship->hitLocs) {
             board[point.row][point.col] = '*';
@@ -146,7 +146,6 @@ void Controller::startAttacks() {
                 if (winner) {
                     continue;
                 }
-                //std::cin.ignore();
                 wait();
             } catch (const IllegalOperation& badStrike) {
                 displayError(badStrike.what());
