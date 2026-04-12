@@ -5,7 +5,7 @@
 This is the final project for Northeastern University’s EECE2140, developed by Elliot Hill and Aiden Powell. This project implements a terminal-based version of the traditional board game Battleship using object oriented C++, and features a design sufficiently modular to be replaced in the future by a GUI-based system, AI players, and more.
 
 ## Current Progress
-As of 4/1/26: Model and view documentation is complete. Many other files exist without declarations. Progress toward implementation of model is underway.
+As of 4/1/26: Model and view documentation is complete. Many other files exist without declarations. Progress toward implementation of model is underway.z
 
 ## Main Functionalities 
 - Launchable with CLI arguments 
@@ -18,27 +18,24 @@ As of 4/1/26: Model and view documentation is complete. Many other files exist w
 ## Design Summary
 Below are the primary functionalities a user can interface with
 
-### Starting the game
+### Starting the game 
 
-1. Inputs: number of rows, number of columns, filepath to Player 1 ships config, filepath to Player 2 ships config.
-2. Ensure board size values are logical.
-3. Config files are evaluated by a ShipReader to instantiate a collection of Ship objects based on inputted sizes. Ensure ship values are logical and comply with the specified board size.
-4. GameModel instantiates empty ShipBoard and HitBoard objects of the specified size; returns ShipBoardBuilder with lists of Ships to user for placement.
-5. Once both ShipBoards are sealed, GameModel signals to Controller a new (first) player is ready to take a turn.
+1. Inputs: number of rows (type number and press enter), number of columns (type number and press enter), filepath to Player 1 ships config, filepath to Player 2 ships config.
+2. Prompt to begin ship placement
 
 ### Ship Placement
 1. While unplaced Ships remain for a player:
-    - Inputs: player to place for, Ship to place, Point to place at, orientation of Ship
-    - Validate placement 
+    - Inputs: player to place for, Ship to place, Point to place at, orientation of Ship (In Letter , Number, Orientation format ex. A1H)
+    - Validate placement (press enter)
 2. When player 1 has no more ships remaining: repeat the previous step until no ships remain for player 2.
-3. ShipBoardBuilder receives ship placement, ShipBoardBuilder creates ShipNodes equal to the size of the ship to be placed on ShipBoard for the GameModel.
+3. ShipBoard receives ship placement, ShipBoard stores location of Ship vector as part of a player profile as passes it to the Model
 4. When max number of ships in list reached, prompt player to confirm, when confirmed, seal ShipBoard from future mutation.
 
 
 **Strike**
 1. Inputs: player to be struck, Point to be struck.
 2. GameModel receives player intention to strike, checks against player’s own HitBoard to check for attempting to strike previously struck position. If so, fail; if not, forward Point to opponent’s ShipBoard.
-3. ShipBoard checks if the Point contains a ShipNode; if not, return MISS. If so, forwards strike to relevant ShipNode and return HIT. 
+3. ShipBoard checks if the Point contains a ship vector; if not, return MISS. If so, forwards strike to relevant ShipNode and return HIT. 
 4. ShipNode increments total hits for its own Ship wrapper object. If the relevant Ship’s hits are equal to its total size, it has been sunk. 
 5. If a ShipNode’s ship has been sunk, return to ShipBoard SUNK, else FLOAT.
 6. If ShipBoard receives SUNK, publish notification to Controller that a Battleship has been sunk.
